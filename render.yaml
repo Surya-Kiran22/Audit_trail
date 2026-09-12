@@ -1,0 +1,33 @@
+# Render Infrastructure-as-Code Blueprint Spec
+# Deploy both Backend Web Service and Frontend Static Site on Render
+
+services:
+  # Backend Express API Web Service
+  - type: web
+    name: audit-trail-backend
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+        comment: "Provide your MongoDB connection string (e.g. MongoDB Atlas URI)"
+
+  # Frontend React (Vite) Static Site
+  - type: static
+    name: audit-trail-frontend
+    region: oregon
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE
+        value: https://audit-trail-backend.onrender.com/api
