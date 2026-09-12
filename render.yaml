@@ -18,8 +18,9 @@ services:
         comment: "Provide your MongoDB connection string (e.g. MongoDB Atlas URI)"
 
   # Frontend React (Vite) Static Site
-  - type: static
+  - type: web
     name: audit-trail-frontend
+    runtime: static
     region: oregon
     plan: free
     buildCommand: cd frontend && npm install && npm run build
